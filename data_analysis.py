@@ -11,12 +11,12 @@ st.subheader("Interact with this dashboard using the sidebar to find out more")
 
 
 #read in the file
-movies_data = pd.read_csv("https://www.kaggle.com/datasets/danielgrijalvas/movies/download?datasetVersionNumber=2")
+movies_data = pd.read_csv("movies.csv")
 movies_data.drop_duplicates(inplace = True)  # drop_duplicates
 
 
 #read in the tips file
-tips = pd.read_csv("https://www.kaggle.com/datasets/jsphyg/tipping/download?datasetVersionNumber=1")
+tips = pd.read_csv("tips.csv")
 tips.drop_duplicates(inplace = True)  # drop_duplicates
 
 with st.expander("Plot with Matplotlib and Plotly: Click to expand"):
