@@ -19,7 +19,7 @@ movies_data.dropna()
 
 
 # Creating sidebar widget filters from movies dataset
-directors_list = movies_data['director'].unique().tolist()
+year_list = movies_data['year'].unique().tolist()
 score_rating = movies_data['score'].unique().tolist()
 genre_list = movies_data['genre'].unique().tolist()
 
