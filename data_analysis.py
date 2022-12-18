@@ -18,40 +18,6 @@ movies_data.count()
 movies_data.dropna()
 
 
-
-#read in the tips file
-tips = pd.read_csv("tips.csv")
-tips.drop_duplicates(inplace = True)  # drop_duplicates
-
-with st.expander("Plot with Matplotlib and Plotly: Click to expand"):
-    # creating a bar graph with matplotlib
-    st.write("""
-    Average Movie Budget, Grouped by Genre
-    """)
-    avg_budget = movies_data.groupby('genre')['budget'].mean().round()
-    avg_budget = avg_budget.reset_index()
-    genre = avg_budget['genre']
-    avg_bud = avg_budget['budget']
-
-    fig = plt.figure(figsize = (19, 10))
-
-    plt.bar(genre, avg_bud, color = 'maroon')
-    plt.xlabel('genre')
-    plt.ylabel('budget')
-    plt.title('Matplotlib Bar Chart Showing The Average Budget of Movies in Each Genre')
-    st.pyplot(fig)
-
-    # Creating a line chart with plotly
-    st.write("""
-    ##### Average User Rating, Grouped by Genre #####
-    """)
-    avg_rating = movies_data.groupby('genre')['score'].mean().round(1)
-    avg_rating = avg_rating.reset_index()
-
-    figpx = px.line(avg_rating, x = 'genre', y = 'score', title = 'Plotly Line Chart Showing The Average User Rating of Movie in Each Genre')
-    st.plotly_chart(figpx)
-
-
 # Creating sidebar widget filters from movies dataset
 directors_list = movies_data['director'].unique().tolist()
 score_rating = movies_data['score'].unique().tolist()
@@ -60,55 +26,65 @@ genre_list = movies_data['genre'].unique().tolist()
 
 # Add the filters. Every widget goes in here
 with st.sidebar:
-
-    new_score_rating = st.slider(label = "Move the slider to make the dataframe change values:",
-                                 min_value = min(score_rating),
-                                 max_value = max(score_rating),
-                                 value = (min(score_rating), max(score_rating)))
-
-
-    new_genre_list = st.multiselect("Select and deselect the genre you wish to view",
-                                        genre_list, default = ['Animation', 'Horror', 'Comedy', 'Action', 'Biography', 'Fantasy', 'Romance'])
-
-    radio_viz = st.radio("Choose a visualization:",
-                        ('Total_bills', 'Tips', 'Piechart'))
+    st.write("Select a range on the slider (it represents movie score) to view the total number of movies in a genre that falls within that range ")
+    #create a slider to hold user scores
+    new_score_rating = st.slider(label = "Choose a value:",
+                                  min_value = 1.0,
+                                  max_value = 10.0,
+                                 value = (3.0,4.0))
 
 
-#filter for slider
+    st.write("Select your preferred genre(s) and year to view the movies released that year and on that genre")
+    #create a multiselect option that holds genre
+    new_genre_list = st.multiselect('Choose Genre:',
+                                        genre_list, default = ['Animation', 'Horror', 'Fantasy', 'Romance'])
+
+    #create a selectbox option that holds all unique years
+    year = st.selectbox('Choose a Year',
+                                  year_list, 0)
+
+#Configure the slider widget for interactivity
 score_info = (movies_data['score'].between(*new_score_rating))
-score_infos= movies_data[score_info]
 
-#filter for genre and average reviews with multiselect
-genre_avg_score = (movies_data['genre'].isin(new_genre_list))
-avg_rating = movies_data[genre_avg_score].groupby('genre')['score'].mean().round(1)
-avg_rating = avg_rating.reset_index()
+
+
+#Configure the selectbox and multiselect widget for interactivity
+new_genre_year = (movies_data['genre'].isin(new_genre_list)) & (movies_data['year'] == year)
 
 
 #VISUALIZATION SECTION
 #group the columns needed for visualizations
-col1, col2 = st.columns([1,3])
+col1, col2 = st.columns([2,3])
 with col1:
-    directors = (round(movies_data[score_info].groupby('director').score.mean(),1))
-    directors.reset_index()
-    st.dataframe(directors)
+    st.write("""#### Lists of movies filtered by year and Genre """)
+    dataframe_genre_year = movies_data[new_genre_year].groupby(['name', 'genre'])['year'].sum()
+    dataframe_genre_year = dataframe_genre_year.reset_index()
+    st.dataframe(dataframe_genre_year, width = 400)
 
 with col2:
-    figpx = px.line(avg_rating, x = 'genre', y = 'score', title = 'Genre and average rating by year')
+    st.write("""#### User score of movies and their genre """)
+    rating_count_year = movies_data[score_info].groupby('genre')['score'].count()
+    rating_count_year = rating_count_year.reset_index()
+    figpx = px.line(rating_count_year, x = 'genre', y = 'score')
     st.plotly_chart(figpx)
 
-if radio_viz == "Total_bills":
-    st.write('You selected', radio_viz)
-    fig5 = px.bar(tips, x = 'sex', y = 'total_bill', color = 'time', barmode = 'group', height = 400)
-    st.plotly_chart(fig5)
 
-elif radio_viz == "Tips":
-    st.write('You selected', radio_viz)
-    fig6 = px.bar(tips, x = 'sex', y = 'tip', color = 'time', barmode = 'group', height = 400)
-    st.plotly_chart(fig6)
 
-elif radio_viz == "Piechart":
-    st.write('You selected', radio_viz)
-    fig7 = px.pie(tips, values='tip', names='day', color_discrete_sequence=px.colors.sequential.RdBu)
-    st.plotly_chart(fig7)
-else:
-    st.write("Pick a radio button")
+
+ # creating a bar graph with matplotlib
+st.write("""
+Average Movie Budget, Grouped by Genre
+    """)
+avg_budget = movies_data.groupby('genre')['budget'].mean().round()
+avg_budget = avg_budget.reset_index()
+genre = avg_budget['genre']
+avg_bud = avg_budget['budget']
+
+fig = plt.figure(figsize = (19, 10))
+
+plt.bar(genre, avg_bud, color = 'maroon')
+plt.xlabel('genre')
+plt.ylabel('budget')
+plt.title('Matplotlib Bar Chart Showing The Average Budget of Movies in Each Genre')
+st.pyplot(fig)
+
