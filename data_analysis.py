@@ -40,8 +40,7 @@ with st.sidebar:
                                         genre_list, default = ['Animation', 'Horror', 'Fantasy', 'Romance'])
 
     #create a selectbox option that holds all unique years
-    year = st.selectbox('Choose a Year',
-                                  year_list, 0)
+    year = st.selectbox('Choose a Year', year_list, 0)
 
 #Configure the slider widget for interactivity
 score_info = (movies_data['score'].between(*new_score_rating))
