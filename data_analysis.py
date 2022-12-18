@@ -11,7 +11,7 @@ st.subheader("Interact with this dashboard using the sidebar to find out more")
 
 
 #read in the file
-movies_data = pd.read_csv("movies.csv")
+movies_data = pd.read_csv("https://raw.githubusercontent.com/danielgrijalva/movie-stats/7c6a562377ab5c91bb80c405be50a0494ae8e582/movies.csv")
 movies_data.drop_duplicates(inplace = True)  # drop_duplicates
 
 
@@ -22,7 +22,7 @@ tips.drop_duplicates(inplace = True)  # drop_duplicates
 with st.expander("Plot with Matplotlib and Plotly: Click to expand"):
     # creating a bar graph with matplotlib
     st.write("""
-    Matplotlib bar chart with st.pyplot()
+    Average Movie Budget, Grouped by Genre
     """)
     avg_budget = movies_data.groupby('genre')['budget'].mean().round()
     avg_budget = avg_budget.reset_index()
@@ -34,17 +34,17 @@ with st.expander("Plot with Matplotlib and Plotly: Click to expand"):
     plt.bar(genre, avg_bud, color = 'maroon')
     plt.xlabel('genre')
     plt.ylabel('budget')
-    plt.title('Matplotlib bar chart that shows the average budget for movies in each genre')
+    plt.title('Matplotlib Bar Chart Showing The Average Budget of Movies in Each Genre')
     st.pyplot(fig)
 
     # Creating a line chart with plotly
     st.write("""
-    ##### Plotly line chart that shows the average score or user rating of movies in each genre #####
+    ##### Average User Rating, Grouped by Genre #####
     """)
     avg_rating = movies_data.groupby('genre')['score'].mean().round(1)
     avg_rating = avg_rating.reset_index()
 
-    figpx = px.line(avg_rating, x = 'genre', y = 'score', title = 'Genre and average rating')
+    figpx = px.line(avg_rating, x = 'genre', y = 'score', title = 'Plotly Line Chart Showing The Average User Rating of Movie in Each Genre')
     st.plotly_chart(figpx)
 
 
