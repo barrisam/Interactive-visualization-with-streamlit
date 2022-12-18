@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 # To set a webpage title, header and subtitle
 st.set_page_config(page_title = "Movies analysis",layout = 'wide')
 st.header("Interactive Dashboard")
-st.subheader("Interact with this dashboard using the sidebar to find out more")
+st.subheader("Interact with this dashboard using the widgets on the sidebar")
 
 
 #read in the file
