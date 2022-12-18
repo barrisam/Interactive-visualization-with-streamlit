@@ -12,7 +12,11 @@ st.subheader("Interact with this dashboard using the widgets on the sidebar")
 
 #read in the file
 movies_data = pd.read_csv("https://raw.githubusercontent.com/danielgrijalva/movie-stats/7c6a562377ab5c91bb80c405be50a0494ae8e582/movies.csv")
-movies_data.drop_duplicates(inplace = True)  # drop_duplicates
+movies_data.info()
+movies_data.duplicated()
+movies_data.count()
+movies_data.dropna()
+
 
 
 #read in the tips file
